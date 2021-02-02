@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Server
 {
@@ -17,10 +18,13 @@ namespace Server
 		public ComplexModelResponse PingComplexModel(ComplexModelInput inputModel)
 		{
 			Console.WriteLine("Input data. IntProperty: {0}, StringProperty: {1}", inputModel.IntProperty, inputModel.StringProperty);
-			return new ComplexModelResponse
+
+            return new ComplexModelResponse
 			{
 				FloatProperty = float.MaxValue / 2,
-				StringProperty = Guid.NewGuid().ToString()
+				StringProperty = inputModel.StringProperty,
+				ListProperty = inputModel.ListProperty,
+				DateTimeOffsetProperty = inputModel.DateTimeOffsetProperty
 			};
 		}
 
@@ -38,5 +42,10 @@ namespace Server
 		{
 			return null;
 		}
-	}
+
+		public void XmlMethod(XElement xml)
+		{
+			Console.WriteLine(xml.ToString());
+		}
+    }
 }

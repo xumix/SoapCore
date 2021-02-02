@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using Models;
 using SoapCore;
 
 namespace Server
@@ -16,17 +17,15 @@ namespace Server
 	{
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.TryAddSingleton<SampleService>();
-			services.AddMvc();
+			services.TryAddSingleton<ISampleService, SampleService>();
+			services.AddMvc(x => x.EnableEndpointRouting = false);
+			services.AddSoapCore();
 		}
 
-		public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+		public void Configure(IApplicationBuilder app)
 		{
-			loggerFactory.AddConsole();
-			loggerFactory.AddDebug();
-
-			app.UseSoapEndpoint<SampleService>("/Service.svc", new BasicHttpBinding(), SoapSerializer.DataContractSerializer);
-			app.UseSoapEndpoint<SampleService>("/Service.asmx", new BasicHttpBinding(), SoapSerializer.XmlSerializer);
+			app.UseSoapEndpoint<ISampleService>("/Service.svc", new BasicHttpBinding(), SoapSerializer.DataContractSerializer);
+			app.UseSoapEndpoint<ISampleService>("/Service.asmx", new BasicHttpBinding(), SoapSerializer.XmlSerializer);
 			app.UseMvc();
 		}
 	}
